@@ -1,0 +1,12 @@
+name: ProgettoFW
+version: @version@
+main: com.gmail.samueler53.progettofw.ProgettoFW
+api-version: 1.16
+commands:
+  easteregg:
+    permission: easteregg.command.test
+    description: Comando base
+    aliases: eastereggs
+    usage: è un segreto
+    permission-message: Non hai i permessi per usare questo comando
+
