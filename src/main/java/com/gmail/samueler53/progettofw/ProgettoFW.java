@@ -19,8 +19,9 @@ public final class ProgettoFW extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
         getCommand("easteregg").setExecutor(new EasterEggCommands(this));
         try {
-            data = new Data(Data.loadData("Saved.data")); //load data
+            data = Data.loadData("Saved.data"); //load data
             Config config = new Config("Config.yml", this);
+
             //settate title e subtitle da qua ogni volta?
             config.save();
         } catch (IOException e) {

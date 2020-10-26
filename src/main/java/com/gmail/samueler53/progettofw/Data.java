@@ -22,6 +22,10 @@ public class Data implements Serializable {
         return previouslyPlayersCurse;
     }
 
+    public void setPlayerCurse(UUID uuid, boolean flag) {
+        getPreviouslyPlayersCurse().put(uuid,flag);
+    }
+
     //getter restart
     public int getRestart() {
         return restart;
@@ -31,13 +35,7 @@ public class Data implements Serializable {
     //saving
     public Data(HashMap<UUID,Boolean> previouslyOnlinePlayers,int restart) {
         this.previouslyPlayersCurse = previouslyOnlinePlayers;
-        this.restart = restart + 1;
-    }
-
-    //loading
-    public Data(Data loadedData) {
-        this.previouslyPlayersCurse = loadedData.previouslyPlayersCurse;
-        this.restart = loadedData.restart;
+        this.restart = restart;
     }
 
 

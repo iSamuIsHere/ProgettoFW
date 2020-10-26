@@ -24,31 +24,32 @@ public class EasterEggCommands implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        //easteregg
+        //easter egg
         if(sender instanceof Player){
-
-
-            //3° restart ->
-            if(plugin.getData().getRestart() == 7) {
-                if (args[0].equalsIgnoreCase("3")) { //spawn horse
-                    Player player = (Player) sender;
-                    World world = player.getWorld();
-                    Horse horse = (Horse) world.spawnEntity(player.getLocation(), EntityType.HORSE);
-                    horse.setColor(Horse.Color.WHITE);
-                    horse.setTamed(true);
-                    horse.setOwner(player);
-                    horse.setCustomName("Napoleone");
-                    horse.getInventory().setSaddle(new ItemStack(Material.SADDLE));
+            if(!(args.length == 2)) sender.sendMessage("Devi inserire due argomenti");
+            else {
+                //3° restart ->
+                if (plugin.getData().getRestart() == 3) {
+                    if (args[0].equalsIgnoreCase("egg") && args[1].equalsIgnoreCase("3")) { //spawn horse
+                        Player player = (Player) sender;
+                        World world = player.getWorld();
+                        Horse horse = (Horse) world.spawnEntity(player.getLocation(), EntityType.HORSE);
+                        horse.setColor(Horse.Color.WHITE);
+                        horse.setTamed(true);
+                        horse.setOwner(player);
+                        horse.setCustomName("Napoleone");
+                        horse.getInventory().setSaddle(new ItemStack(Material.SADDLE));
+                    }
                 }
-            }
 
-            //6° restart ->
-            if(plugin.getData().getRestart() == 7) {
-                if (args[0].equalsIgnoreCase("6")) {
-                    UUID uuidPlayer = ((Player) sender).getUniqueId();
-                    HashMap<UUID,Boolean> newPlayerCurse = plugin.getData().getPreviouslyPlayersCurse();
-                    newPlayerCurse.put(uuidPlayer,true);//new player
-                    plugin.getData().saveData("Saved.data");//save data
+                //6° restart ->
+                if (plugin.getData().getRestart() == 6) {
+                    if (args[0].equalsIgnoreCase("egg") && args[1].equalsIgnoreCase("6")) {
+                        UUID uuidPlayer = ((Player) sender).getUniqueId();
+                        plugin.getData().setPlayerCurse(uuidPlayer, true);
+                        plugin.getData().saveData("Saved.data");//save data
+                    }
+
                 }
             }
         }

@@ -32,7 +32,7 @@ public class PlayerListener implements Listener {
         if(!(player.hasPlayedBefore())){
             UUID uuidPlayer = player.getUniqueId();
             HashMap<UUID,Boolean> newPlayerCurse = plugin.getData().getPreviouslyPlayersCurse();
-            newPlayerCurse.put(uuidPlayer,false);//new player
+            plugin.getData().setPlayerCurse(uuidPlayer,false);//new player
             plugin.getData().saveData("Saved.data");//save data
         }
 
@@ -41,13 +41,13 @@ public class PlayerListener implements Listener {
 
 
         //1° restart ->
-        if(plugin.getData().getRestart() == 7) { //send title
+        if(plugin.getData().getRestart() == 1) { //send title
             player.sendTitle(plugin.getConfig().getString("title"),plugin.getConfig().getString("subtitle"),10,70,20); //title
         }
 
 
         //2° restart ->
-        if(plugin.getData().getRestart() == 7) { //teleport to jungle biome and reset of the inventory
+        if(plugin.getData().getRestart() == 2) { //teleport to jungle biome and reset of the inventory
 
             //allora ho provato a crearlo io il bioma ma non funziona dato che spigot è buggato https://github.com/PaperMC/Paper/issues/2791 https://hub.spigotmc.org/jira/browse/SPIGOT-5823
             player.getWorld().setBiome(100, player.getWorld().getHighestBlockYAt(100, 100), 100, Biome.JUNGLE);
@@ -70,8 +70,12 @@ public class PlayerListener implements Listener {
             player.getInventory().clear();//svuotare l'inventario
         }
 
+        if(plugin.getData().getRestart() == 3){
+            player.sendMessage("Hai accesso al comando /easter egg 3");
+        }
+
         //6° restart ->
-        if(plugin.getData().getRestart() == 7) { //simple message
+        if(plugin.getData().getRestart() == 6) { //simple message
             player.sendMessage("Al prossimo riavvio del server cio' che hai nell'inventario rimarra' li per sempre. Scegli bene cosa tenere");
         }
     }
@@ -79,7 +83,7 @@ public class PlayerListener implements Listener {
     //5° restart ->
     @EventHandler
     public void dropChange (BlockBreakEvent event){//change the log drop in to a dirt drop
-        if(plugin.getData().getRestart() == 7) {
+        if(plugin.getData().getRestart() == 5) {
             if (event == null) {
                 return;
             }
@@ -89,6 +93,7 @@ public class PlayerListener implements Listener {
             }
         }
     }
+
 
     //7° restart ->
     @EventHandler
