@@ -23,7 +23,6 @@ public class EasterEggCommands implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        //easter egg
         if (sender instanceof Player) {
             if (!(args.length == 2)) {
                 sender.sendMessage("Devi inserire due argomenti");
