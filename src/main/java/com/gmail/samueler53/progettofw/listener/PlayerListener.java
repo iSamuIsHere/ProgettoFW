@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -47,15 +48,17 @@ public class PlayerListener implements Listener {
                 location.getBlock().setBiome(Biome.JUNGLE);
                 player.teleport(location);
                 player.getInventory().clear();
+                break;
             }
             case 3: {
                 player.sendMessage("Hai accesso al comando /easter egg 3");
+                break;
             }
             case 6: {
                 player.sendMessage("Al prossimo riavvio del server cio' che hai nell'inventario rimarra' li per sempre. Scegli bene cosa tenere");
+                break;
             }
         }
-
     }
 
     //5° restart ->
@@ -76,7 +79,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void inventoryInteract(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player)) return;
-        if (plugin.getData().getRestart() == 7 && !plugin.getData().getPreviouslyPlayersCurse().get(event.getWhoClicked())) {
+        if (plugin.getData().getRestart() == 7 && !plugin.getData().getPreviouslyPlayersCurse().get(event.getWhoClicked().getUniqueId())) {
             if (!(event.getWhoClicked() instanceof Player)) return;
             Player player = (Player) event.getWhoClicked();
             if (event.isLeftClick() || event.isRightClick() || event.isShiftClick()) {
@@ -88,7 +91,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void stopDrop(PlayerDropItemEvent event) {
-        if (plugin.getData().getRestart() == 7 && !plugin.getData().getPreviouslyPlayersCurse().get(event.getPlayer())) {
+        if (plugin.getData().getRestart() == 7 && !plugin.getData().getPreviouslyPlayersCurse().get(event.getPlayer().getUniqueId())) {
             {
                 event.setCancelled(true);
             }
@@ -99,7 +102,7 @@ public class PlayerListener implements Listener {
     public void stopCollect(EntityPickupItemEvent event) {
         if (!(event.getEntity() instanceof Player))
             return;
-        if (plugin.getData().getRestart() == 7 && !plugin.getData().getPreviouslyPlayersCurse().get(event.getEntity())) {
+        if (plugin.getData().getRestart() == 7 && !plugin.getData().getPreviouslyPlayersCurse().get(event.getEntity().getUniqueId())) {
             if (event.getEntity() instanceof Player) {
                 event.setCancelled(true);
             }
@@ -107,10 +110,16 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void keepInventory(PlayerDeathEvent event) { //keep inventory
-        event.getEntity();
-        if (plugin.getData().getRestart() == 7 && !plugin.getData().getPreviouslyPlayersCurse().get(event.getEntity())) {
+    public void keepInventory(PlayerDeathEvent event) {
+        if (plugin.getData().getRestart() == 7 && !plugin.getData().getPreviouslyPlayersCurse().get(event.getEntity().getUniqueId())) {
             event.setKeepInventory(true);
+        }
+    }
+
+    @EventHandler
+    public void stopPlace(BlockPlaceEvent event) {
+        if (plugin.getData().getRestart() == 7 && !plugin.getData().getPreviouslyPlayersCurse().get(event.getPlayer().getUniqueId())) {
+            event.setCancelled(true);
         }
     }
 }

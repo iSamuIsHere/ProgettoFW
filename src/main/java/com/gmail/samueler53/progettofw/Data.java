@@ -14,8 +14,8 @@ import java.util.zip.GZIPOutputStream;
 
 public class Data implements Serializable {
     private static transient final long serialVersionUID = 1681012206529286330L;
-    private final HashMap<UUID, Boolean> previouslyPlayersCurse = new HashMap<>();
-    private int restart = 0;
+    private HashMap<UUID, Boolean> previouslyPlayersCurse = new HashMap<>();
+    private int restart = 1;
     private transient String fileName;
 
     public Data(String fileName) {
@@ -53,6 +53,7 @@ public class Data implements Serializable {
             in.close();
             data.setFileName(filePath);
             data.restart++;
+            data.saveData();
             return data;
         } catch (ClassNotFoundException | IOException e) {
             return new Data(filePath);
