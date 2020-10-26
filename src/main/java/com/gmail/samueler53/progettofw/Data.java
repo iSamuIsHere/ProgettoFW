@@ -14,35 +14,29 @@ import java.util.zip.GZIPOutputStream;
 
 public class Data implements Serializable {
     private static transient final long serialVersionUID = 1681012206529286330L;
-    private final HashMap<UUID,Boolean> previouslyPlayersCurse;
-    private final int restart;
+    private final HashMap<UUID, Boolean> previouslyPlayersCurse = new HashMap<>();
+    private int restart = 0;
+    private transient String fileName;
 
-    //getter cursedplayers
+    public Data(String fileName) {
+        this.fileName = fileName;
+    }
+
     public HashMap<UUID, Boolean> getPreviouslyPlayersCurse() {
         return previouslyPlayersCurse;
     }
 
     public void setPlayerCurse(UUID uuid, boolean flag) {
-        getPreviouslyPlayersCurse().put(uuid,flag);
+        getPreviouslyPlayersCurse().put(uuid, flag);
     }
 
-    //getter restart
     public int getRestart() {
         return restart;
     }
 
-
-    //saving
-    public Data(HashMap<UUID,Boolean> previouslyOnlinePlayers,int restart) {
-        this.previouslyPlayersCurse = previouslyOnlinePlayers;
-        this.restart = restart;
-    }
-
-
-
-    public boolean saveData(String filePath) {
+    public boolean saveData() {
         try {
-            BukkitObjectOutputStream out = new BukkitObjectOutputStream(new GZIPOutputStream(new FileOutputStream(filePath)));
+            BukkitObjectOutputStream out = new BukkitObjectOutputStream(new GZIPOutputStream(new FileOutputStream(fileName)));
             out.writeObject(this);
             out.close();
             return true;
@@ -57,12 +51,15 @@ public class Data implements Serializable {
             BukkitObjectInputStream in = new BukkitObjectInputStream(new GZIPInputStream(new FileInputStream(filePath)));
             Data data = (Data) in.readObject();
             in.close();
+            data.setFileName(filePath);
+            data.restart++;
             return data;
         } catch (ClassNotFoundException | IOException e) {
-            e.printStackTrace();
-            return null;
+            return new Data(filePath);
         }
     }
 
-
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
 }

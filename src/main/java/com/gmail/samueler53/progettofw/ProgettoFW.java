@@ -5,25 +5,21 @@ import com.gmail.samueler53.progettofw.listener.PlayerListener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
-
+import java.util.Objects;
 
 public final class ProgettoFW extends JavaPlugin {
 
-
     private Data data;
-
+    private Config config;
 
     @Override
     public void onEnable() {
         // Plugin startup logic
         getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
-        getCommand("easteregg").setExecutor(new EasterEggCommands(this));
+        Objects.requireNonNull(getCommand("easter")).setExecutor(new EasterEggCommands(this));
         try {
-            data = Data.loadData("Saved.data"); //load data
-            Config config = new Config("Config.yml", this);
-
-            //settate title e subtitle da qua ogni volta?
-            config.save();
+            data = Data.loadData(getDataFolder().getPath() + "/Saved.data");
+            config = new Config("Config.yml", this);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -34,9 +30,11 @@ public final class ProgettoFW extends JavaPlugin {
         // Plugin shutdown logic
     }
 
-    public  Data getData() {
+    public Data getData() {
         return data;
     }
 
-
+    public Config getPluginConfig() {
+        return config;
+    }
 }
