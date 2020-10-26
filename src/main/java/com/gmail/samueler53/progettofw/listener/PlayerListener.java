@@ -35,7 +35,6 @@ public class PlayerListener implements Listener {
             plugin.getData().setPlayerCurse(uuidPlayer, false);
             plugin.getData().saveData();
         }
-        //1° restart ->
         switch (plugin.getData().getRestart()) {
             case 1: {
                 player.sendTitle(plugin.getPluginConfig().getConfig().getString("title"), plugin.getPluginConfig().getConfig().getString("subtitle"), 10, 70, 20);
@@ -80,7 +79,6 @@ public class PlayerListener implements Listener {
     public void inventoryInteract(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player)) return;
         if (plugin.getData().getRestart() == 7 && !plugin.getData().getPreviouslyPlayersCurse().get(event.getWhoClicked().getUniqueId())) {
-            if (!(event.getWhoClicked() instanceof Player)) return;
             Player player = (Player) event.getWhoClicked();
             if (event.isLeftClick() || event.isRightClick() || event.isShiftClick()) {
                 event.setCancelled(true);
@@ -103,9 +101,7 @@ public class PlayerListener implements Listener {
         if (!(event.getEntity() instanceof Player))
             return;
         if (plugin.getData().getRestart() == 7 && !plugin.getData().getPreviouslyPlayersCurse().get(event.getEntity().getUniqueId())) {
-            if (event.getEntity() instanceof Player) {
-                event.setCancelled(true);
-            }
+            event.setCancelled(true);
         }
     }
 
