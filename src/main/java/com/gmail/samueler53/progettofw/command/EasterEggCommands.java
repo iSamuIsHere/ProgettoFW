@@ -1,5 +1,6 @@
 package com.gmail.samueler53.progettofw.command;
 
+import com.gmail.samueler53.progettofw.Data;
 import com.gmail.samueler53.progettofw.ProgettoFW;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -12,9 +13,16 @@ import org.bukkit.entity.Horse;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.HashMap;
+import java.util.UUID;
+
 public class EasterEggCommands implements CommandExecutor {
 
+    private final ProgettoFW plugin;
 
+    public EasterEggCommands(ProgettoFW plugin) {
+        this.plugin = plugin;
+    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -23,7 +31,7 @@ public class EasterEggCommands implements CommandExecutor {
 
 
             //3° restart ->
-            if(ProgettoFW.riavvio == 3) {
+            if(ProgettoFW.instance.getData().getRestart() == 7) {
                 if (args[0].equalsIgnoreCase("3")) { //spawn horse
                     Player player = (Player) sender;
                     World world = player.getWorld();
@@ -37,11 +45,12 @@ public class EasterEggCommands implements CommandExecutor {
             }
 
             //6° restart ->
-            if(ProgettoFW.riavvio == 6) {
+            if(ProgettoFW.instance.getData().getRestart() == 7) {
                 if (args[0].equalsIgnoreCase("6")) {
-                    ProgettoFW.maledizione = true;
-                    Player player = (Player) sender;
-                    player.sendMessage("Ti sei salvato");
+                    UUID uuidPlayer = ((Player) sender).getUniqueId();
+                    HashMap<UUID,Boolean> newPlayerCurse = ProgettoFW.instance.getData().getPreviouslyPlayersCurse();
+                    newPlayerCurse.put(uuidPlayer,true);//new player
+                    ProgettoFW.instance.getData().saveData("Saved.data");//save data
                 }
             }
         }

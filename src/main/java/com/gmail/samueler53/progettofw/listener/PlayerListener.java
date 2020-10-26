@@ -1,5 +1,6 @@
 package com.gmail.samueler53.progettofw.listener;
 
+import com.gmail.samueler53.progettofw.Data;
 import com.gmail.samueler53.progettofw.ProgettoFW;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -26,6 +27,7 @@ import java.awt.dnd.DropTarget;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 
 public class PlayerListener implements Listener {
 
@@ -33,17 +35,25 @@ public class PlayerListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event){//quando il player entra nel server
         Player player = event.getPlayer();
 
+        if(!(player.hasPlayedBefore())){
+            UUID uuidPlayer = player.getUniqueId();
+            HashMap<UUID,Boolean> newPlayerCurse = ProgettoFW.instance.getData().getPreviouslyPlayersCurse();;
+            newPlayerCurse.put(uuidPlayer,false);//new player
+            ProgettoFW.instance.getData().saveData("Saved.data");//save data
+        }
+
+
+
 
 
         //1° restart ->
-        if(ProgettoFW.riavvio==1) { //send title
+        if(ProgettoFW.instance.getData().getRestart() == 7) { //send title
             player.sendTitle(ProgettoFW.instance.config.getConfig().getString("title"),ProgettoFW.instance.config.getConfig().getString("subtitle"),10,70,20); //title
-            ProgettoFW.maledizione = false; //per resettarlo al primo riavvio
         }
 
 
         //2° restart ->
-        if(ProgettoFW.riavvio==2) { //teleport to jungle biome and reset of the inventory
+        if(ProgettoFW.instance.getData().getRestart() == 7) { //teleport to jungle biome and reset of the inventory
 
             //allora ho provato a crearlo io il bioma ma non funziona dato che spigot è buggato https://github.com/PaperMC/Paper/issues/2791 https://hub.spigotmc.org/jira/browse/SPIGOT-5823
             player.getWorld().setBiome(100, player.getWorld().getHighestBlockYAt(100, 100), 100, Biome.JUNGLE);
@@ -67,7 +77,7 @@ public class PlayerListener implements Listener {
         }
 
         //6° restart ->
-        if(ProgettoFW.riavvio==6) { //simple message
+        if(ProgettoFW.instance.getData().getRestart() == 7) { //simple message
             player.sendMessage("Al prossimo riavvio del server cio' che hai nell'inventario rimarra' li per sempre. Scegli bene cosa tenere");
         }
     }
@@ -75,7 +85,7 @@ public class PlayerListener implements Listener {
     //5° restart ->
     @EventHandler
     public void dropChange (BlockBreakEvent event){//change the log drop in to a dirt drop
-        if(ProgettoFW.riavvio == 5) {
+        if(ProgettoFW.instance.getData().getRestart() == 7) {
             if (!(event instanceof BlockBreakEvent)) {
                 return;
             }
@@ -88,8 +98,8 @@ public class PlayerListener implements Listener {
 
     //7° restart ->
     @EventHandler
-    public void interazioneInventario(InventoryClickEvent event){ //unable to use the inventory
-        if(ProgettoFW.riavvio == 7 && ProgettoFW.maledizione == false) {
+    public void inventoryInteract(InventoryClickEvent event){ //unable to use the inventory
+        if(ProgettoFW.instance.getData().getRestart() == 7 && ProgettoFW.instance.getData().getPreviouslyPlayersCurse().get(event.getWhoClicked())== false) {
             if (!(event.getWhoClicked() instanceof Player)) return;
             Player player = (Player) event.getWhoClicked();
             if (event.isLeftClick() || event.isRightClick() || event.isShiftClick()) {
@@ -100,15 +110,19 @@ public class PlayerListener implements Listener {
 
     }
     @EventHandler
-    public void bloccaDrop(PlayerDropItemEvent event){ //cant drop
-        if(ProgettoFW.riavvio == 7 && ProgettoFW.maledizione == false) {
-            event.setCancelled(true);
+    public void stopDrop(PlayerDropItemEvent event){ //cant drop
+        if(ProgettoFW.instance.getData().getRestart() == 7 && ProgettoFW.instance.getData().getPreviouslyPlayersCurse().get(event.getPlayer())== false) {
+            {
+                event.setCancelled(true);
+            }
         }
     }
 
     @EventHandler
-    public void bloccaCollect(EntityPickupItemEvent event){ //cant collect
-        if(ProgettoFW.riavvio == 7 && ProgettoFW.maledizione == false) {
+    public void stopCollect(EntityPickupItemEvent event){ //cant collect
+        if(!(event.getEntity() instanceof Player))
+            return;
+        if(ProgettoFW.instance.getData().getRestart() == 7 && ProgettoFW.instance.getData().getPreviouslyPlayersCurse().get(event.getEntity())== false) {
             if (event.getEntity() instanceof Player) {
                 event.setCancelled(true);
             }
@@ -117,7 +131,9 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void keepInventory(PlayerDeathEvent event){ //keep inventory
-        if(ProgettoFW.riavvio == 7 && ProgettoFW.maledizione == false){
+        if(!(event.getEntity() instanceof Player))
+            return;
+        if(ProgettoFW.instance.getData().getRestart() == 7 && ProgettoFW.instance.getData().getPreviouslyPlayersCurse().get(event.getEntity())== false){
             event.setKeepInventory(true);
         }
     }

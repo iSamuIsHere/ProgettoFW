@@ -2,16 +2,18 @@ package com.gmail.samueler53.progettofw;
 
 import com.gmail.samueler53.progettofw.command.EasterEggCommands;
 import com.gmail.samueler53.progettofw.listener.PlayerListener;
+import com.sun.org.apache.xpath.internal.operations.Bool;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 public final class ProgettoFW extends JavaPlugin {
 
-    public static boolean maledizione = false;
     public Config config;
-    public static int riavvio = 0;
     public static ProgettoFW instance;
+    private Data data;
 
 
     @Override
@@ -19,15 +21,10 @@ public final class ProgettoFW extends JavaPlugin {
         instance = this;
         // Plugin startup logic
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
-        getCommand("easteregg").setExecutor(new EasterEggCommands());
+        getCommand("easteregg").setExecutor(new EasterEggCommands(this));
         try {
+            data = new Data(Data.loadData("Saved.data")); //load data
             config = new Config("Config.yml",this);
-            riavvio = config.getConfig().getInt("riavvio")+1; //increment riavvio
-            maledizione = config.getConfig().getBoolean("maledizione");
-            if(riavvio == 8) {
-                riavvio = 0; //si resetta per motivi di test
-            }
-            config.getConfig().set("riavvio",riavvio);
             config.save();
         } catch (IOException e) {
             e.printStackTrace();
@@ -37,7 +34,9 @@ public final class ProgettoFW extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-        config.getConfig().set("maledizione",maledizione);
-        config.save();
+    }
+
+    public  Data getData() {
+        return data;
     }
 }
