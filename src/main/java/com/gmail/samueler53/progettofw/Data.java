@@ -15,7 +15,7 @@ import java.util.zip.GZIPOutputStream;
 public class Data implements Serializable {
     private static transient final long serialVersionUID = 1681012206529286330L;
     private final HashMap<UUID,Boolean> previouslyPlayersCurse;
-    private int restart = 0;
+    private final int restart;
 
     //getter cursedplayers
     public HashMap<UUID, Boolean> getPreviouslyPlayersCurse() {
@@ -49,7 +49,6 @@ public class Data implements Serializable {
             out.close();
             return true;
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             return false;
         }
@@ -62,7 +61,6 @@ public class Data implements Serializable {
             in.close();
             return data;
         } catch (ClassNotFoundException | IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             return null;
         }
